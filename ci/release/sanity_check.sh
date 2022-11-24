@@ -2,6 +2,7 @@
 # shellcheck shell=bash
 
 set -euo pipefail
+export GPG_TTY=$(tty)
 
 echo "START: Validate Sonatype OSSRH Credentials."
 CODE=$(curl -u "$SONATYPE_USER:$SONATYPE_PASSWORD" -sSL -w '%{http_code}' -o /dev/null https://s01.oss.sonatype.org/service/local/staging/profiles)
