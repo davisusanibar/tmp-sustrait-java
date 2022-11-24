@@ -15,7 +15,6 @@ echo "END: Validate Sonatype OSSRH Credentials."
 
 
 echo "START: Validate Signing Private/Public Key."
-gpg-agent --daemon
 echo $SIGNING_KEY | base64 --decode | gpg  --import --debug-level guru --debug-all --verbose
 echo "List secrets key imported."
 gpg --list-secret-keys $SIGNING_KEY_ID
