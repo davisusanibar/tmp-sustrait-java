@@ -2,7 +2,6 @@
 # shellcheck shell=bash
 
 set -euo pipefail
-export GPG_TTY=$(tty)
 
 echo "START: Validate Sonatype OSSRH Credentials."
 CODE=$(curl -u "$SONATYPE_USER:$SONATYPE_PASSWORD" -sSL -w '%{http_code}' -o /dev/null https://s01.oss.sonatype.org/service/local/staging/profiles)
@@ -13,9 +12,9 @@ else
 fi
 echo "END: Validate Sonatype OSSRH Credentials."
 
-
 echo "START: Validate Signing Private/Public Key."
-echo $SIGNING_KEY | base64 --decode | gpg --batch --import --debug-level guru --debug-all --verbose
+echo "Import private key."
+echo $SIGNING_KEY | base64 --decode | gpg --batch --import
 echo "List secrets key imported."
 gpg --list-secret-keys $SIGNING_KEY_ID
 echo "Validate passphrase."
