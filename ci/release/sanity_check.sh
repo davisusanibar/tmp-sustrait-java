@@ -16,8 +16,10 @@ echo "END: Validate Sonatype OSSRH Credentials."
 echo "START: Validate Signing Private/Public Key."
 echo "Import private key."
 echo $SIGNING_KEY | base64 --decode | gpg --batch --import
-echo "List secrets key imported."
-gpg --list-secret-keys $SIGNING_KEY_ID
-echo "Validate passphrase."
-echo "dummy_value" | gpg -q --batch --status-fd 1 --sign --local-user $SIGNING_KEY_ID --passphrase-fd 0 > /dev/null
+echo "Get Keygrip."
+KEYGRIP=`gpg --with-keygrip --list-secret-keys $SIGNING_KEY_ID | sed -e '/^ *Keygrip  *=  */!d;s///;q'`
+echo "Preset passphrase on cache."
+"$(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase" -c $KEYGRIP <<< $SIGNING_PASSWORD
+echo "Test passphrase."
+echo "1234" | gpg -q --batch --status-fd 1 --sign --local-user $SIGNING_KEY_ID --passphrase-fd 0 > /dev/null
 echo "END: Validate Signing Private/Public Key."
