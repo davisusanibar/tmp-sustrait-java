@@ -18,6 +18,9 @@ echo "Import private key."
 echo $SIGNING_KEY | base64 --decode | gpg --batch --import
 echo "Get Keygrip."
 KEYGRIP=`gpg --with-keygrip --list-secret-keys $SIGNING_KEY_ID | sed -e '/^ *Keygrip  *=  */!d;s///;q'`
+echo "Configure caching passphrase."
+allow-preset-passphrase  >> ~/.gnupg/gpg-agent.conf
+gpgconf --reload gpg-agent
 echo "Preset passphrase on cache."
 "$(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase" -c $KEYGRIP <<< $SIGNING_PASSWORD
 echo "Test passphrase."
